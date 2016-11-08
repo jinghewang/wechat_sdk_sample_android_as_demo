@@ -1,11 +1,9 @@
 package com.kanguo.hbd.wxapi;
 
-import com.kanguo.hbd.AddFavoriteToWXActivity;
 import com.kanguo.hbd.Constants;
 import com.kanguo.hbd.GetFromWXActivity;
 import com.kanguo.hbd.PayActivity;
 import com.kanguo.hbd.R;
-import com.kanguo.hbd.SendToWXActivity;
 import com.kanguo.hbd.ShowFromWXActivity;
 import android.app.Activity;
 import android.content.Intent;
@@ -41,27 +39,11 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
         
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
     	api = WXAPIFactory.createWXAPI(this, Constants.APP_ID, false);
+		// 将该app注册到微信
+		api.registerApp(Constants.APP_ID);
 
-    	regBtn = (Button) findViewById(R.id.reg_btn);
-    	regBtn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// 将该app注册到微信
-			    api.registerApp(Constants.APP_ID);    	
-			}
-		});
-    	
-        gotoBtn = (Button) findViewById(R.id.goto_send_btn);
-        gotoBtn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-		        startActivity(new Intent(WXEntryActivity.this, SendToWXActivity.class));
-		        finish();
-			}
-		});
-        
+
+        //启动微信
         launchBtn = (Button) findViewById(R.id.launch_wx_btn);
         launchBtn.setOnClickListener(new View.OnClickListener() {
 			
@@ -71,20 +53,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 			}
 		});
         
-        checkBtn = (Button) findViewById(R.id.check_timeline_supported_btn);
-        checkBtn.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				int wxSdkVersion = api.getWXAppSupportAPI();
-				if (wxSdkVersion >= TIMELINE_SUPPORTED_VERSION) {
-					Toast.makeText(WXEntryActivity.this, "wxSdkVersion = " + Integer.toHexString(wxSdkVersion) + "\ntimeline supported", Toast.LENGTH_LONG).show();
-				} else {
-					Toast.makeText(WXEntryActivity.this, "wxSdkVersion = " + Integer.toHexString(wxSdkVersion) + "\ntimeline not supported", Toast.LENGTH_LONG).show();
-				}
-			}
-		});
-        
+
+
+        //支付界面
         payBtn = (Button) findViewById(R.id.goto_pay_btn);
         payBtn.setOnClickListener(new View.OnClickListener() {
 			
@@ -95,20 +66,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler{
 			}
 		});
         
-        favButton = (Button) findViewById(R.id.goto_fav_btn);
-        favButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(WXEntryActivity.this, AddFavoriteToWXActivity.class));
-				finish();
-			}
-		});
-        
-        // debug
-       
-        // debug end
-        
+
         api.handleIntent(getIntent(), this);
     }
 
